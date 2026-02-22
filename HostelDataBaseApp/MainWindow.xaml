@@ -16,20 +16,33 @@
         <TabControl>
             <!-- Вкладка гостей -->
             <TabItem Header="Гости">
-               
-                    
-                
-                <StackPanel Margin="10">
-                    <Button Content="Загрузить гостей" Click="LoadGuests_Click" Margin="0,0,0,10"/>
-                    <DataGrid x:Name="GuestsDataGrid" AutoGenerateColumns="False" Height="300">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding = "{Binding GuestId}" Width="50"/>
-                            <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="200"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
 
-                   
+
+                <StackPanel >
+                    <StackPanel Margin="10">
+                        
+                        <DataGrid x:Name="GuestsDataGrid" AutoGenerateColumns="False" Height="300">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding = "{Binding GuestId}" Width="50"/>
+                                <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="200"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                       
                     </StackPanel>
+                    <StackPanel>
+                        <Button HorizontalAlignment="Left"  Content="Загрузить гостей" Click="LoadGuests_Click" Margin="5,10,5,10"/>    
+                    
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox x:Name="FullNameTextBox" Width="200" Text="ФИО гостя" Margin="0,0,10,0"/>
+                        <TextBox x:Name="PhoneTextBox" Width="150" Text="Телефон" Margin="0,0,10,0"/>
+                        <TextBox x:Name="EmailTextBox" Width="200" Text="Email" Margin="0,0,10,0"/>
+                        <TextBox x:Name="PassportTextBox" Width="150" Text="Паспортные данные" Margin="0,0,10,0"/>
+                        <Button Content="Добавить гостя" Click="AddGuest_Click" Margin="10,0,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+                
             </TabItem>
 
             <!-- Вкладка номеров -->

@@ -19,7 +19,7 @@ namespace HostelDataBaseApp
         public MainWindow() //конструктор класса
         {
            InitializeComponent();
-            this.Btn.Click += AddGuest_Click;
+     
         }
 
 
