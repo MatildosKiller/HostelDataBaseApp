@@ -15,10 +15,14 @@
         </Grid.RowDefinitions>-->
         <TabControl>
             <!-- Вкладка гостей -->
-            <TabItem Header="Гости">
+            <TabItem Header="Гости" x:Name="hosts">
 
 
                 <StackPanel >
+                    <StackPanel>
+                        <Button HorizontalAlignment="Left"  Content="Загрузить гостей" Click="LoadGuests_Click" Margin="5,10,5,10"/>
+
+                    </StackPanel>
                     <StackPanel Margin="10">
                         
                         <DataGrid x:Name="GuestsDataGrid" AutoGenerateColumns="False" Height="300">
@@ -30,17 +34,27 @@
 
                        
                     </StackPanel>
-                    <StackPanel>
-                        <Button HorizontalAlignment="Left"  Content="Загрузить гостей" Click="LoadGuests_Click" Margin="5,10,5,10"/>    
-                    
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBox x:Name="FullNameTextBox" Width="200" Text="ФИО гостя" Margin="0,0,10,0"/>
-                        <TextBox x:Name="PhoneTextBox" Width="150" Text="Телефон" Margin="0,0,10,0"/>
-                        <TextBox x:Name="EmailTextBox" Width="200" Text="Email" Margin="0,0,10,0"/>
-                        <TextBox x:Name="PassportTextBox" Width="150" Text="Паспортные данные" Margin="0,0,10,0"/>
-                        <Button Content="Добавить гостя" Click="AddGuest_Click" Margin="10,0,0,0"/>
-                    </StackPanel>
+
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <!-- ФИО -->
+                            <ColumnDefinition Width="1.5*" />
+                            <!-- Телефон -->
+                            <ColumnDefinition Width="2*" />
+                            <!-- Email -->
+                            <ColumnDefinition Width="1.5*" />
+                            <!-- Паспорт -->
+                            <ColumnDefinition Width="Auto" />
+                            <!-- Кнопка -->
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox x:Name="FullNameTextBox" Text="ФИО гостя" Grid.Column="0" Margin="0,0,10,0"/>
+                        <TextBox x:Name="PhoneTextBox" Text="Телефон" Grid.Column="1" Margin="0,0,10,0"/>
+                        <TextBox x:Name="EmailTextBox" Text="Email" Grid.Column="2" Margin="0,0,10,0"/>
+                        <TextBox x:Name="PassportTextBox" Text="Паспортные данные" Grid.Column="3" Margin="0,0,10,0"/>
+                        <Button Content="Добавить гостя" Click="AddGuest_Click" Grid.Column="4" Margin="10,0,0,0"/>
+                    </Grid>
                 </StackPanel>
                 
             </TabItem>

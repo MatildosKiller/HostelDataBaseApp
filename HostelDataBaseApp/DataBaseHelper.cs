@@ -4,8 +4,7 @@ using Microsoft.Data.SqlClient;
 
 public static class DatabaseHelper
 {
-    private static string connectionString =
-        "Server=localhost;Database=HostelDB;Trusted_Connection=True;TrustServerCertificate=True;";
+    private static string connectionString = "Server=.\\SQLEXPRESS;Database=HostelDB;Trusted_Connection=True;TrustServerCertificate=True;";
 
     // Получение списка гостей
     public static List<Guest> GetGuests()
