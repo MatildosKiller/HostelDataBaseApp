@@ -182,5 +182,59 @@ public static class DatabaseHelper
         return bookings;
     }
 
+    // Добавление номера
+  
+    public static void AddRoom(Room room)
+    {
+        using (var connection = new SqlConnection(connectionString))
+        {
+            
+            connection.Open();
+            var command = new SqlCommand(
+     "INSERT INTO Rooms (RoomNumber, Capacity, PricePerNight, IsActive) " +
+     "VALUES (@RoomNumber, @Capacity, @PricePerNight, @IsActive)",
+     connection);
+
+            command.Parameters.AddWithValue("@RoomNumber", room.RoomNumber);
+            command.Parameters.AddWithValue("@Capacity", room.Capacity);
+            command.Parameters.AddWithValue("@PricePerNight", room.PricePerNight);
+            command.Parameters.AddWithValue("@IsActive", room.IsActive);
+
+            command.ExecuteNonQuery();
+        }
+    }
+
+
+    // Обновление номера
+    public static void UpdateRoom(Room room)
+    {
+        using (var connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            var command = new SqlCommand
+                ("UPDATE Rooms SET RoomNumber = @RoomNumber, Capacity = @Capacity, " +
+                "PricePerNight = @PricePerNight, IsActive = @IsActive WHERE RoomId = @RoomId", connection);
+
+            command.Parameters.AddWithValue("@RoomId", room.RoomId);
+            command.Parameters.AddWithValue("@RoomNumber", room.RoomNumber);
+            command.Parameters.AddWithValue("@Capacity", room.Capacity);
+            command.Parameters.AddWithValue("@PricePerNight", room.PricePerNight);
+            command.Parameters.AddWithValue("@IsActive", room.IsActive);
+
+            command.ExecuteNonQuery();
+        }
+    }
+
+    // Удаление номера
+    public static void DeleteRoom(int roomId)
+    {
+        using (var connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            var command = new SqlCommand("DELETE FROM Rooms WHERE RoomId = @RoomId", connection);
+            command.Parameters.AddWithValue("@RoomId", roomId);
+            command.ExecuteNonQuery();
+        }
+    }
 
 }

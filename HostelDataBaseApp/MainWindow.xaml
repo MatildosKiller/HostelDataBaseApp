@@ -59,10 +59,156 @@
                 
             </TabItem>
 
-            <!-- Вкладка номеров -->
             <TabItem Header="Номера">
-                <!-- Аналогично для номеров -->
+                <StackPanel Margin="10">
+                    <!-- Форма добавления/редактирования номера -->
+                    <GroupBox Header="Управление номерами" Margin="0,0,0,20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Номер комнаты -->
+                            <TextBlock Text="Номер комнаты:" Grid.Row="0" Grid.Column="0" Margin="5"/>
+                            <TextBox x:Name="RoomNumberTextBox" Grid.Row="0" Grid.Column="1" Margin="5"/>
+
+                            <!-- Вместимость -->
+                            <TextBlock Text="Вместимость:" Grid.Row="1" Grid.Column="0" Margin="5"/>
+                            <TextBox x:Name="CapacityTextBox" Grid.Row="1" Grid.Column="1" Margin="5"/>
+
+                            <!-- Цена за ночь -->
+                            <TextBlock Text="Цена за ночь:" Grid.Row="2" Grid.Column="0" Margin="5"/>
+                            <TextBox x:Name="PricePerNightTextBox" Grid.Row="2" Grid.Column="1" Margin="5"/>
+
+                            <!-- Активен -->
+                            <TextBlock Text="Активен:" Grid.Row="3" Grid.Column="0" Margin="5"/>
+                            <CheckBox x:Name="IsActiveCheckBox" Grid.Row="3" Grid.Column="1" Margin="5" IsChecked="True"/>
+
+                            <!-- Кнопки управления -->
+                            <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                                <Button x:Name="AddRoomButton" Content="Добавить номер" Click="AddRoom_Click" Margin="5" Width="100"/>
+                                <Button x:Name="UpdateRoomButton" Content="Обновить номер" Click="UpdateRoom_Click" Margin="5" Width="100"/>
+                                <Button x:Name="DeleteRoomButton" Content="Удалить номер" Click="DeleteRoom_Click" Margin="5" Width="100"/>
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
+
+                    <!-- Список номеров -->
+                    <GroupBox Header="Список номеров">
+                        <DataGrid x:Name="RoomsDataGrid" AutoGenerateColumns="False" Height="300"
+                      SelectionChanged="RoomsDataGrid_SelectionChanged">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding RoomId}" Width="50"/>
+                                <DataGridTextColumn Header="Номер" Binding="{Binding RoomNumber}" Width="80"/>
+                                <DataGridTextColumn Header="Вместимость" Binding="{Binding Capacity}" Width="80"/>
+                                <DataGridTextColumn Header="Цена за ночь" Binding="{Binding PricePerNight, StringFormat={}{0:C}}" Width="100"/>
+                                <DataGridCheckBoxColumn Header="Активен" Binding="{Binding IsActive}" Width="60"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+                </StackPanel>
             </TabItem>
+
+            <TabItem Header="Бронирования">
+                <StackPanel Margin="10">
+                    <!-- Форма создания бронирования -->
+                    <GroupBox Header="Создать бронирование" Margin="0,0,0,20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Выбор гостя -->
+                            <TextBlock Text="Гость:" Grid.Row="0" Grid.Column="0" Margin="5"/>
+                            <ComboBox x:Name="GuestComboBox" Grid.Row="0" Grid.Column="1" Margin="5"
+                          DisplayMemberPath="FullName" SelectedValuePath="GuestId"/>
+
+                            <!-- Выбор номера -->
+                            <TextBlock Text="Номер:" Grid.Row="1" Grid.Column="0" Margin="5"/>
+                            <ComboBox x:Name="RoomComboBox" Grid.Row="1" Grid.Column="1" Margin="5"
+                          DisplayMemberPath="RoomNumber" SelectedValuePath="RoomId"/>
+
+                            <!-- Дата заезда -->
+                            <TextBlock Text="Дата заезда:" Grid.Row="2" Grid.Column="0" Margin="5"/>
+                            <DatePicker x:Name="CheckInDatePicker" Grid.Row="2" Grid.Column="1" Margin="5"/>
+
+                            <!-- Дата выезда -->
+                            <TextBlock Text="Дата выезда:" Grid.Row="3" Grid.Column="0" Margin="5"/>
+                            <DatePicker x:Name="CheckOutDatePicker" Grid.Row="3" Grid.Column="1" Margin="5"/>
+
+                            <!-- Сумма -->
+                            <TextBlock Text="Сумма:" Grid.Row="4" Grid.Column="0" Margin="5"/>
+                            <TextBox x:Name="TotalAmountTextBox" Grid.Row="4" Grid.Column="1" Margin="5"/>
+
+                            <!-- Кнопка создания бронирования -->
+                            <Button x:Name="CreateBookingButton" Content="Создать бронирование" Grid.Row="5" Grid.ColumnSpan="2"
+                        Margin="5" Click="CreateBooking_Click" HorizontalAlignment="Center" Width="150"/>
+                        </Grid>
+                    </GroupBox>
+
+                    <!-- Поиск свободных номеров -->
+                    <GroupBox Header="Поиск свободных номеров" Margin="0,0,0,20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="С:" Grid.Row="0" Grid.Column="0" Margin="5"/>
+                            <DatePicker x:Name="SearchCheckInDate" Grid.Row="0" Grid.Column="1" Margin="5"/>
+                            <Button x:Name="FindAvailableRoomsButton" Content="Найти свободные номера" Grid.Row="0" Grid.Column="2"
+                        Margin="5" Click="FindAvailableRooms_Click" Width="150"/>
+                        </Grid>
+                    </GroupBox>
+
+                    <!-- Список свободных номеров -->
+                    <GroupBox Header="Свободные номера" Margin="0,0,0,20">
+                        <DataGrid x:Name="AvailableRoomsDataGrid" AutoGenerateColumns="False" Height="150">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Номер" Binding="{Binding RoomNumber}" Width="80"/>
+                                <DataGridTextColumn Header="Вместимость" Binding="{Binding Capacity}" Width="80"/>
+                                <DataGridTextColumn Header="Цена за ночь" Binding="{Binding PricePerNight, StringFormat={}{0:C}}" Width="100"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+
+                    <!-- Список бронирований -->
+                    <GroupBox Header="Все бронирования">
+                        <DataGrid x:Name="BookingsDataGrid" AutoGenerateColumns="False" Height="200">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding BookingId}" Width="50"/>
+                                <DataGridTextColumn Header="Гость" Binding="{Binding GuestName}" Width="150"/>
+                                <DataGridTextColumn Header="Номер" Binding="{Binding RoomNumber}" Width="80"/>
+                                <DataGridTextColumn Header="Заезд" Binding="{Binding CheckInDate, StringFormat=dd.MM.yyyy}" Width="90"/>
+                                <DataGridTextColumn Header="Выезд" Binding="{Binding CheckOutDate, StringFormat=dd.MM.yyyy}" Width="90"/>
+                                <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="80"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+                </StackPanel>
+            </TabItem>
+
         </TabControl>
     </Grid>
 </Window>
