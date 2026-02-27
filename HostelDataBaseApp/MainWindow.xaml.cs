@@ -19,14 +19,56 @@ namespace HostelDataBaseApp
         private Room selectedRoom = null;
         public MainWindow() //конструктор класса
         {
-           InitializeComponent();
+            InitializeComponent();
             LoadGuestsAndRooms_OnStartup();
-
+            UpdateUIState();
 
         }
+        private void UpdateUIState()
+        {
+            if (App.CurrentUser != null)
+            {
+                // Пользователь авторизован
+                WelcomeText.Text = $"Добро пожаловать, {App.CurrentUser.FullName}!";
+                LoginButton.Visibility = Visibility.Collapsed;
+                LogoutButton.Visibility = Visibility.Visible;
+                MainTabControl.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                // Пользователь не авторизован
+                WelcomeText.Text = "Не авторизован";
+                LoginButton.Visibility = Visibility.Visible;
+                LogoutButton.Visibility = Visibility.Collapsed;
+                MainTabControl.Visibility = Visibility.Collapsed;
+            }
+        }
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            var loginWindow = new LoginWindow();
+            if (loginWindow.ShowDialog().GetValueOrDefault())
+            {
+                UpdateUIState(); // Обновляем интерфейс после успешного входа
+            }
+        }
 
-       
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show(
 
+                "Вы уверены, что хотите выйти из системы?",
+                "Подтверждение выхода",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question
+            );
+
+            if (result == MessageBoxResult.Yes)
+            {
+                App.CurrentUser = null;
+                MessageBox.Show("Вы вышли из системы.");
+                UpdateUIState();
+            }
+        }
         private void LoadRooms()
         {
             try
@@ -45,10 +87,6 @@ namespace HostelDataBaseApp
             {
                 try
                 {
-                    
-
-
-
                     var newGuest = new Guest
                     {
                         FullName = FullNameTextBox.Text.Trim(),
@@ -132,8 +170,14 @@ namespace HostelDataBaseApp
                     MessageBox.Show("Дата выезда должна быть позже даты заезда!");
                     return;
                 }
+                string error;
+                int bookingId = DatabaseHelper.CreateBooking(guestId, roomId, checkIn, checkOut, totalAmount, out error);
+                if (bookingId == -1)
+                {
+                    MessageBox.Show(error);
+                    return;
+                }
 
-                int bookingId = DatabaseHelper.CreateBooking(guestId, roomId, checkIn, checkOut, totalAmount);
                 MessageBox.Show($"Бронирование создано успешно! ID: {bookingId}");
 
                 // Обновляем список бронирований

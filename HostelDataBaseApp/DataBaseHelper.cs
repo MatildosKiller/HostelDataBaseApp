@@ -6,6 +6,91 @@ public static class DatabaseHelper
 {
     private static string connectionString = "Server=.\\SQLEXPRESS;Database=HostelDB;Trusted_Connection=True;TrustServerCertificate=True;";
 
+    public static User AuthenticateUser(string username, string password)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            string query = "SELECT UserId, Username, Password, FullName FROM Users WHERE Username = @username AND Password = @password";
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@username", username);
+                command.Parameters.AddWithValue("@password", password);
+
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new User
+                        {
+                            UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
+                            Username = reader.GetString(reader.GetOrdinal("Username")),
+                            Password = reader.GetString(reader.GetOrdinal("Password")),
+                            FullName = reader.IsDBNull(reader.GetOrdinal("FullName")) ? null : reader.GetString(reader.GetOrdinal("FullName"))
+                        };
+                    }
+                    else
+                    {
+                        return null; // Пользователь не найден или пароль неверный
+                    }
+                }
+            }
+        }
+    }
+
+    // Регистрация нового пользователя
+    public static bool RegisterUser(string username, string password, string fullName)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            // Проверяем, существует ли уже пользователь с таким логином
+            if (GetUserByUsername(username) != null)
+            {
+                return false; // Пользователь уже существует
+            }
+
+            string query = "INSERT INTO Users (Username, Password, FullName) VALUES (@username, @password, @fullName)";
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@username", username);
+                command.Parameters.AddWithValue("@password", password); // В реальном приложении используйте хеширование!
+                command.Parameters.AddWithValue("@fullName", fullName ?? (object)DBNull.Value);
+
+                connection.Open();
+                int rowsAffected = command.ExecuteNonQuery();
+                return rowsAffected > 0;
+            }
+        }
+    }
+
+    // Получение данных пользователя
+    public static User GetUserByUsername(string username)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            string query = "SELECT UserId, Username, Password, FullName FROM Users WHERE Username = @username";
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@username", username);
+
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new User
+                        {
+                            UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
+                            Username = reader.GetString(reader.GetOrdinal("Username")),
+                            Password = reader.GetString(reader.GetOrdinal("Password")),
+                            FullName = reader.IsDBNull(reader.GetOrdinal("FullName")) ? null : reader.GetString(reader.GetOrdinal("FullName"))
+                        };
+                    }
+                    return null; // Пользователь не найден
+                }
+            }
+        }
+    }
     // Получение списка гостей
     public static List<Guest> GetGuests()
     {
@@ -123,8 +208,21 @@ public static class DatabaseHelper
     }
 
     // Создание бронирования
-    public static int CreateBooking(int guestId, int roomId, DateTime checkIn, DateTime checkOut, decimal totalAmount)
+    public static int CreateBooking(int guestId, int roomId, DateTime checkIn, DateTime checkOut, decimal totalAmount, out string error)
     {
+        error = null;
+
+        var bookings = GetBookings().Where(o => o.RoomId == roomId);
+
+        if (bookings.Any(o => (checkIn <= o.CheckInDate && checkOut >= o.CheckInDate && checkOut <= o.CheckOutDate) || (checkIn >= o.CheckInDate && checkIn <= o.CheckOutDate && checkOut >= o.CheckOutDate) || (checkIn >= o.CheckInDate && checkOut <= o.CheckOutDate) || (checkIn <= o.CheckInDate && checkOut >= o.CheckOutDate)))
+        {
+            error = "в указанный период номер занят";
+
+            return -1;
+
+        }
+
+
         using (var connection = new SqlConnection(connectionString))
         {
             connection.Open();
@@ -183,12 +281,12 @@ public static class DatabaseHelper
     }
 
     // Добавление номера
-  
+
     public static void AddRoom(Room room)
     {
         using (var connection = new SqlConnection(connectionString))
         {
-            
+
             connection.Open();
             var command = new SqlCommand(
      "INSERT INTO Rooms (RoomNumber, Capacity, PricePerNight, IsActive) " +

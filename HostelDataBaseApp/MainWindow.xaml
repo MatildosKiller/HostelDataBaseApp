@@ -13,7 +13,19 @@
             <RowDefinition/>
 
         </Grid.RowDefinitions>-->
-        <TabControl>
+        <!-- Панель авторизации вверху -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" Background="LightGray" Padding="10">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBlock x:Name="WelcomeText" Margin="0,0,20,0"/>
+                <Button x:Name="LoginButton" Content="Войти" Click="LoginButton_Click" Width="80" Margin="0,0,10,0"/>
+                <Button x:Name="LogoutButton" Content="Выйти" Click="LogoutButton_Click" Width="80"/>
+            </StackPanel>
+        </Border>
+        <TabControl x:Name="MainTabControl" Grid.Row="1">
             <!-- Вкладка гостей -->
             <TabItem Header="Гости" x:Name="hosts">
 
@@ -24,15 +36,18 @@
 
                     </StackPanel>
                     <StackPanel Margin="10">
-                        
+
                         <DataGrid x:Name="GuestsDataGrid" AutoGenerateColumns="False" Height="300">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="ID" Binding = "{Binding GuestId}" Width="50"/>
                                 <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="200"/>
+                                <DataGridTextColumn Header="телефон" Binding="{Binding Phone}" Width="200"/>
+                                <DataGridTextColumn Header="мэйл" Binding="{Binding Email}" Width="200"/>
+                                <DataGridTextColumn Header="паспорт" Binding="{Binding PassportData}" Width="200"/>
                             </DataGrid.Columns>
                         </DataGrid>
 
-                       
+
                     </StackPanel>
 
                     <Grid Margin="10">
@@ -56,7 +71,7 @@
                         <Button Content="Добавить гостя" Click="AddGuest_Click" Grid.Column="4" Margin="10,0,0,0"/>
                     </Grid>
                 </StackPanel>
-                
+
             </TabItem>
 
             <TabItem Header="Номера">
